@@ -23,8 +23,8 @@
 
  `src.main.resources` 위치에 `secret.properties`를 만듭니다.
 
-| # secret.properties ...<br/><br/>#Service Authkey Settings<br/>spring.project.jjwt.secretkey={String}<br/><br/>#Service Root Domain<br/>spring.service.root.domain= {String} <= ex:)metajou.kro.kr<br/><br/>#CORS Domain Settings<br/>spring.client.webserver.url={String} <= ex:)http://www.metajou.kro.kr:3000<br/>spring.client.cors.url={String} <= ex:)http://www.metajou.kro.kr:3000 |
-| :----------------------------------------------------------- |
+| # secret.properties ...<br/><br/>#Service Authkey Settings<br/>spring.project.jjwt.secretkey={String}<br/>spring.project.jjwt.tokenname={String}<br/><br/>#Service Root Domain<br/>spring.service.root.domain= {String} <= ex:)metajou.kro.kr<br/><br/>#CORS Domain Settings<br/>spring.client.webserver.url={String} <= ex:)http://www.metajou.kro.kr:3000<br/>spring.client.cors.url={String} <= ex:)http://www.metajou.kro.kr:3000 |
+|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 
 
