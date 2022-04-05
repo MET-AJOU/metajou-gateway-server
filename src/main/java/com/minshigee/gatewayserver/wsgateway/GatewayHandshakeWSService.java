@@ -1,4 +1,4 @@
-package com.minshigee.gatewayserver.websocket;
+package com.minshigee.gatewayserver.wsgateway;
 
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class GatewayHandshakeWSService extends HandshakeWebSocketService {
         try {
             ServerHttpRequest request = exchange.getRequest();
             if (true){
-
+                System.out.println("1111");
                 return super.handleRequest(exchange, handler);
             }
         }

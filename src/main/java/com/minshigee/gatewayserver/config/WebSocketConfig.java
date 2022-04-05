@@ -1,20 +1,30 @@
 package com.minshigee.gatewayserver.config;
 
-import com.minshigee.gatewayserver.websocket.GatewayWSHandler;
+import com.minshigee.gatewayserver.wsgateway.GatewayWSHandler;
+import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.HandlerMapping;
+import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-@EnableWebSocket
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
-public class WebSocketConfig implements WebSocketConfigurer {
+@AllArgsConstructor
+public class WebSocketConfig {
 
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        WebSocketHandler handler = new GatewayWSHandler();
-        registry.addHandler(null);
+    private final GatewayWSHandler gatewayWSHandler;
+
+    @Bean
+    public HandlerMapping webSocketHandlerMapping() {
+        Map<String, WebSocketHandler> map = new HashMap<>();
+        map.put("/gateway", gatewayWSHandler);
+
+        SimpleUrlHandlerMapping handlerMapping = new SimpleUrlHandlerMapping();
+        handlerMapping.setOrder(1);
+        handlerMapping.setUrlMap(map);
+        return handlerMapping;
     }
 }
-
