@@ -1,6 +1,7 @@
 package com.minshigee.gatewayserver.config;
 
 import com.minshigee.gatewayserver.wsgateway.GatewayWSHandler;
+import com.minshigee.gatewayserver.wsgateway.HandShakeWSService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,11 @@ public class WebSocketConfig{
                 "/gateway", handler
         );
         return new SimpleUrlHandlerMapping(handlerMap, 1);
+    }
+
+    @Bean
+    public WebSocketHandlerAdapter webSocketHandlerAdapter() {
+        return new WebSocketHandlerAdapter(new HandShakeWSService());
     }
 
 }

@@ -9,7 +9,7 @@ public enum ErrorCode {
     //JWT TOKEn ERROR
     AUTH_TOKEN_ERROR(new GlobalException(HttpStatus.BAD_REQUEST, "접근 토근이 유효하지 않습니다.")),
     //Auth
-    NOT_FOUND_AUTHINFO(new GlobalException(HttpStatus.NOT_FOUND, "인증정보가 존재하지 않습니다.")),
+    NOT_FOUND_AUTHINFO(new GlobalException(HttpStatus.UNAUTHORIZED, "인증정보가 존재하지 않습니다.")),
     NO_VERIFIED_USER(new GlobalException(HttpStatus.UNAUTHORIZED, "인증받지 않은 유저입니다.")),
     EXPIRED_TOKEN(new GlobalException(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다.")),
     AUTH_SERVER_ERROR(new GlobalException(HttpStatus.BAD_REQUEST, "인증 서버에 문제가 발생했습니다")),
