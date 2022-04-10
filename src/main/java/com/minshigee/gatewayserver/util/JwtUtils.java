@@ -1,19 +1,31 @@
 package com.minshigee.gatewayserver.util;
 
+import com.minshigee.gatewayserver.exception.ErrorCode;
+import com.minshigee.gatewayserver.wsgateway.entity.AuthInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.util.MultiValueMap;
 
 import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
-@Component
 public class JwtUtils {
+
+    private static class Singleton{
+        private static final JwtUtils instance = new JwtUtils();
+    }
+    public static JwtUtils getInstance (){
+        return Singleton.instance;
+    }
+    private JwtUtils() {}
 
     @Value("${spring.project.jjwt.secretkey}")
     private String secret;
@@ -54,26 +66,43 @@ public class JwtUtils {
         return !isTokenExpired(token);
     }
 
-    public String resolveToken(ServerHttpRequest request) {
-        Assert.notNull(request.getCookies().getFirst(tokenName), "accesstoken Cookie가 비었습니다.");
-        return request.getCookies().getFirst(tokenName).getValue();
+    public AuthInfo extractAuthInfoFromToken(String token) {
+        Claims data = getAllClaimsFromToken(token);
+        try {
+            AuthInfo authInfo = AuthInfo.builder()
+                .userCode(getUserCodeFromToken(token))
+                .userEmail(data.get("email", String.class))
+                .roles(data.get("role", List.class))
+                .build();
+            return authInfo;
+        }
+        catch (Exception e) {}
+        throw ErrorCode.AUTH_TOKEN_ERROR.build();
     }
-
-//    public Authentication getAuthentication(String token) {
-//        CustomAuthentication authentication = new CustomAuthentication(
-//                getUserCodeFromToken(token),
-//                getAllClaimsFromToken(token),
-//                token
-//        );
-//        authentication.setIsAuthenticated(validateToken(token));
-//
-//        return authentication;
-//    }
 
     public Boolean isAppropriateRequestForFilter(ServerHttpRequest request) {
         if (!request.getCookies().containsKey(tokenName))
             return false;
         String token = request.getCookies().getFirst(tokenName).getValue();
         return validateToken(token);
+    }
+
+    public Boolean isAppropriateRequestForFilter(MultiValueMap<String,HttpCookie> cookies) {
+        if (!cookies.containsKey(tokenName))
+            return false;
+        String token = resolveToken(cookies);
+        return validateToken(token);
+    }
+
+    public String resolveToken(ServerHttpRequest request) {
+        if(request.getCookies().getFirst(tokenName) == null)
+            throw ErrorCode.NOT_FOUND_AUTHINFO.build();
+        return request.getCookies().getFirst(tokenName).getValue();
+    }
+
+    public String resolveToken(MultiValueMap<String,HttpCookie> cookies) {
+        if(cookies.getFirst(tokenName) == null)
+            throw ErrorCode.NOT_FOUND_AUTHINFO.build();
+        return cookies.getFirst(tokenName).getValue();
     }
 }
